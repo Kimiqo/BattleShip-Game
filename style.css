@@ -13,18 +13,21 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-#app{
+#app {
   background-color: #242424;
-  height: 100vh;
+  width: 80%; /* Adjust the width as needed */
+  margin: 0 auto; /* Centers the #app horizontally */
   padding: 50px;
+  box-sizing: border-box;
 }
 
 body {
   margin: 0;
+  padding: 0;
   display: flex;
-  place-items: center;
-  padding-left: 20%;
+  justify-content: center; /* Centers the #app horizontally */
 }
+
 
 /* Header styles */
 header {
@@ -49,7 +52,7 @@ header .developer {
 
 main{
   display: flex;
-  gap: 50px;
+  gap: 320px;
 }
 
 footer {
@@ -119,4 +122,23 @@ footer {
   background-color: white;
   color: red;
   border-radius: 10px;
+}
+
+
+.player-info {
+  display: flex;
+  justify-content: space-between;
+  color: #fff;
+  font-size: 1.2rem;
+  padding: 10px 20px;
+  background-color: #333;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.player-info .player,
+.player-info .computer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
