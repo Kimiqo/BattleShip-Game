@@ -1,3 +1,4 @@
 # BattleShip Game Implementation
 
- https://kimiqo.github.io/BattleShip-Game/
+#Link
+[battle-ship-game-sigma.vercel.app](https://battle-ship-game-sigma.vercel.app/)
