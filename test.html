@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Battleship Sound Test</title>
+    <style>
+        .test-container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            text-align: center;
+        }
+        button {
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h2>Sound Effect Test</h2>
+        <div id="buttons"></div>
+    </div>
+    <script type="module">
+        import AudioManager from '/game/audioManager.js';
+
+        // Initialize audio
+        AudioManager.init();
+
+        // Create test buttons
+        const sounds = ['hit', 'miss', 'sunk', 'game-over', 'placement'];
+        const buttonContainer = document.getElementById('buttons');
+
+        sounds.forEach(sound => {
+            const button = document.createElement('button');
+            button.textContent = `Test ${sound} sound`;
+            button.onclick = () => AudioManager.play(sound);
+            buttonContainer.appendChild(button);
+        });
+    </script>
+</body>
+</html>

@@ -5,8 +5,8 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>BattleShip Game</title>
-    <script type="module" crossorigin src="/assets/index-86YfZhD6.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-CVkKWD5H.css">
+    <script type="module" crossorigin src="/assets/index-DJY_wAyY.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-Bzte3ri3.css">
   </head>
   <body>
     <div id="app">
@@ -14,23 +14,91 @@
         <div class="title">BattleShip v1</div>
         <div class="developer">By Kimiko</div>
       </header>
-      <br><br>
-      <div class="player-info">
-        <div class="player">
-          <p id="player-name">Player: Johnny</p>
-          <p id="player-ships">Ships Remaining: TBD</p>
-        </div>
-        <div class="computer">
-          <p id="comp-name">Player: Computer</p>
-          <p id="comp-ships">Ships Remaining: TBD</p>
-        </div>
-      </div>
-      <br><br>
       <main>
-
       </main>
-      <footer>
-        <p>© 2024 Kimiko Dev. All rights reserved.</p>
+      <footer class="modern-footer">
+        <div class="footer-content">
+          <div class="footer-brand">
+            <div class="footer-logo">⚓</div>
+            <div class="footer-title">BattleShip</div>
+          </div>
+          <div class="footer-links">
+            <a href="#" class="footer-link" id="howToPlayBtn">How to Play</a>
+            <a href="#" class="footer-link" id="aboutBtn">About</a>
+            <a href="https://github.com/Kimiqo" class="footer-link" target="_blank">GitHub</a>
+          </div>
+
+          <!-- How to Play Modal -->
+          <div id="howToPlayModal" class="modal">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h2>How to Play Battleship</h2>
+                <span class="close-modal">&times;</span>
+              </div>
+              <div class="modal-body">
+                <div class="instruction-section">
+                  <h3>1. Setup Phase</h3>
+                  <p>• Place your ships on your grid (left side)</p>
+                  <p>• Click to place, right-click to rotate</p>
+                  <p>• Ships can't overlap or extend beyond the grid</p>
+                </div>
+                <div class="instruction-section">
+                  <h3>2. Battle Phase</h3>
+                  <p>• Take turns attacking the opponent's grid</p>
+                  <p>• Click a cell on the enemy grid (right side) to attack</p>
+                  <p>• Red = Hit, Gray = Miss</p>
+                </div>
+                <div class="instruction-section">
+                  <h3>3. Victory</h3>
+                  <p>• Sink all enemy ships to win</p>
+                  <p>• A ship is sunk when all its cells are hit</p>
+                </div>
+                <div class="instruction-section">
+                  <h3>4. Tips</h3>
+                  <p>• Use the checkerboard pattern for efficient searching</p>
+                  <p>• When you hit a ship, try adjacent squares</p>
+                  <p>• Watch for patterns in computer's attacks</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- About Modal -->
+          <div id="aboutModal" class="modal">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h2>About Battleship</h2>
+                <span class="close-modal">&times;</span>
+              </div>
+              <div class="modal-body">
+                <div class="about-section">
+                  <div class="about-icon">🎮</div>
+                  <h3>The Game</h3>
+                  <p>A modern take on the classic Battleship game, featuring an intelligent AI opponent and sleek design.</p>
+                </div>
+                <div class="about-section">
+                  <div class="about-icon">💻</div>
+                  <h3>Technology</h3>
+                  <p>Built with vanilla JavaScript, CSS3, and HTML5, showcasing clean code and modern web practices.</p>
+                </div>
+                <div class="about-section">
+                  <div class="about-icon">🧠</div>
+                  <h3>AI Opponent</h3>
+                  <p>Features a smart computer opponent with multiple difficulty levels and strategic targeting.</p>
+                </div>
+                <div class="about-section">
+                  <div class="about-icon">👩‍💻</div>
+                  <h3>Developer</h3>
+                  <p>Created by Kimiko, a passionate developer focused on creating engaging web experiences.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="footer-social">
+            <div class="footer-made-by">Made with 💙 by Kimiko</div>
+            <div class="footer-copyright">© 2024 All rights reserved</div>
+          </div>
+        </div>
       </footer>
     </div>
   </body>

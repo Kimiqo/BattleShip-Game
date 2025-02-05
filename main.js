@@ -2,6 +2,10 @@
 import Player from '/game/players.js';
 import Ship from '/game/ship.js';
 import UI from '/game/UI.js';
+import AudioManager from '/game/audioManager.js';
+import DifficultySelector from '/game/difficultySelector.js';
+import ShipPlacement from '/game/shipPlacement.js';
+import Modals from '/game/modals.js';
 
 const playerShips = [
     new Ship(6), 
@@ -19,21 +23,141 @@ const compShips = [
     new Ship(2)
 ];
 
-const p1 = new Player("Johnny", playerShips);
-const p2 = new Player("Computer", compShips);
+// Make p1 globally available for ship placement
+window.p1 = new Player("Johnny", playerShips);
+window.p2 = new Player("Computer", compShips);
+
+// Alias for local use
+const p1 = window.p1;
+const p2 = window.p2;
+
+// Initialize audio and modals
+AudioManager.init();
+Modals.init();
 
 const main = document.querySelector("main");
+const gameStatus = document.createElement("div");
+const gameContainer = document.createElement("div");
+
+// Create difficulty selector
+const difficultyContainer = document.createElement("div");
+difficultyContainer.className = "controls-container";
+difficultyContainer.appendChild(DifficultySelector.createSelector());
+
+// Create player board container
+const playerBoardContainer = document.createElement("div");
+const playerTitle = document.createElement("div");
 const playerGrid = document.createElement("div");
+
+// Create computer board container
+const compBoardContainer = document.createElement("div");
+const compTitle = document.createElement("div");
 const compGrid = document.createElement("div");
+
+// Set classes
+gameStatus.className = "game-status";
+gameContainer.className = "game-container";
+playerBoardContainer.className = "board-container";
+compBoardContainer.className = "board-container";
 playerGrid.className = "game_grid";
 compGrid.className = "game_grid";
+playerTitle.className = "board-title";
+compTitle.className = "board-title";
 
-UI.createDivs(10, playerGrid, p1);
-UI.createDivs(10, compGrid, p2);
+// Set titles
+playerTitle.textContent = "YOUR FLEET";
+compTitle.textContent = "ENEMY WATERS";
 
-main.appendChild(playerGrid);
-main.appendChild(compGrid);
+// Assemble the board containers
+playerBoardContainer.appendChild(playerTitle);
+playerBoardContainer.appendChild(playerGrid);
+compBoardContainer.appendChild(compTitle);
+compBoardContainer.appendChild(compGrid);
 
-export default function comp(){
+let currentPlayer = p1;
+let gameOver = false;
+
+function updateStatus(message) {
+    gameStatus.textContent = message;
+}
+
+function handleCellClick(event, row, col) {
+    if (gameOver || currentPlayer !== p1) return;
+
+    if (p1.attack(p2, row, col)) {
+        const cell = event.target;
+        const hit = p2.gameboard.hits.some(([r, c]) => r === row && c === col);
+        cell.classList.add(hit ? 'hit' : 'miss');
+        cell.textContent = hit ? 'X' : 'M';
+
+        if (p2.gameboard.allShipsSunk()) {
+            gameOver = true;
+            updateStatus("Game Over - You Win!");
+            return;
+        }
+
+        if (!hit) {
+            currentPlayer = p2;
+            updateStatus("Computer's turn");
+            makeComputerMove();
+        } else {
+            updateStatus("Hit! Take another shot!");
+        }
+    }
+}
+
+function makeComputerMove() {
+    setTimeout(() => {
+        if (gameOver) return;
+
+        const [compRow, compCol] = p2.computerMove(p1);
+        const playerCell = playerGrid.children[compRow * 10 + compCol];
+        const hit = p1.gameboard.hits.some(([r, c]) => r === compRow && c === compCol);
+        
+        playerCell.classList.add(hit ? 'hit' : 'miss');
+        playerCell.textContent = hit ? 'X' : 'M';
+
+        if (p1.gameboard.allShipsSunk()) {
+            gameOver = true;
+            updateStatus("Game Over - Computer Wins!");
+            return;
+        }
+
+        if (hit) {
+            updateStatus("Computer hit! They get another turn!");
+            makeComputerMove(); // Computer gets another turn
+        } else {
+            currentPlayer = p1;
+            updateStatus("Your turn");
+        }
+    }, 800);
+}
+
+// Initialize the game with ship placement phase
+UI.createDivs(10, playerGrid, p1, (e, row, col) => {
+    ShipPlacement.handleClick(e, row, col);
+}, (e, row, col) => {
+    ShipPlacement.handleHover(e, row, col);
+});
+
+UI.createDivs(10, compGrid, p2, handleCellClick);
+
+main.appendChild(difficultyContainer);
+main.appendChild(gameStatus);
+gameContainer.appendChild(playerBoardContainer);
+gameContainer.appendChild(compBoardContainer);
+main.appendChild(gameContainer);
+
+// Start with placement phase
+ShipPlacement.init(playerShips, () => {
+    updateStatus("Your turn");
+    compGrid.style.opacity = "1";
+});
+
+// Hide computer's grid during placement
+compGrid.style.opacity = "0.5";
+updateStatus("Place your ships");
+
+export default function comp() {
     return compGrid;
 }

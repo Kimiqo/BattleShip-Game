@@ -1,7 +1,7 @@
 import comp from "../main.js"
 
 export default class UI {
-    static createDivs(num, gridType, player) {
+    static createDivs(num, gridType, player, clickHandler = null, hoverHandler = null) {
         for (let x = 0; x < num; x++) {
             for (let i = 0; i < num; i++) {
                 const gridBox = document.createElement('div');
@@ -11,11 +11,16 @@ export default class UI {
                 gridBox.innerHTML = "";
                 gridType.appendChild(gridBox);
 
-                gridBox.addEventListener("click", () => {
-                    if (gridType === comp()) {
-                        this.handleCompGridClick(gridBox, player);
-                    }
-                });
+                if (clickHandler) {
+                    gridBox.addEventListener("click", (e) => {
+                        clickHandler(e, parseInt(gridBox.dataset.row), parseInt(gridBox.dataset.col));
+                    });
+                }
+                if (hoverHandler) {
+                    gridBox.addEventListener("mouseenter", (e) => {
+                        hoverHandler(e, parseInt(gridBox.dataset.row), parseInt(gridBox.dataset.col));
+                    });
+                }
             }
         }
     }
