@@ -2,18 +2,19 @@ export default class DifficultySelector {
     static difficulties = {
         easy: {
             name: 'Easy',
-            hitChance: 0.5,     // 50% chance to make smart moves
+            hitChance: 0.6,     // 60% chance to make smart moves
             smartTargeting: true
         },
         medium: {
             name: 'Medium',
-            hitChance: 0.8,     // 80% chance to make smart moves
+            hitChance: 0.85,    // 85% chance to make smart moves
             smartTargeting: true
         },
         hard: {
             name: 'Hard',
             hitChance: 1.0,     // Always makes smart moves
-            smartTargeting: true
+            smartTargeting: true,
+            enhancedProbability: true  // Uses advanced probability calculations
         }
     };
 

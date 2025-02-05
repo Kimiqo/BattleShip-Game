@@ -9,6 +9,37 @@
   </head>
   <body>
     <div id="app">
+      <!-- Game Over Modal -->
+      <div id="gameOverModal" class="modal">
+        <div class="modal-content game-over-modal">
+          <div class="modal-header">
+            <h2 id="gameOverTitle">Game Over!</h2>
+            <span class="close-modal">&times;</span>
+          </div>
+          <div class="modal-body">
+            <div class="game-over-message">
+              <div class="game-over-icon" id="gameOverIcon"></div>
+              <p id="gameOverMessage"></p>
+            </div>
+            <div class="game-over-stats">
+              <div class="stat-item">
+                <span class="stat-label">Hits:</span>
+                <span class="stat-value" id="hitCount">0</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Misses:</span>
+                <span class="stat-value" id="missCount">0</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Accuracy:</span>
+                <span class="stat-value" id="accuracy">0%</span>
+              </div>
+            </div>
+            <button id="restartButton" class="restart-button">Play Again</button>
+          </div>
+        </div>
+      </div>
+
       <header>
         <div class="title">BattleShip v1</div>
         <div class="developer">By Kimiko</div>
@@ -96,6 +127,37 @@
           <div class="footer-social">
             <div class="footer-made-by">Made with 💙 by Kimiko</div>
             <div class="footer-copyright">© 2024 All rights reserved</div>
+          </div>
+
+          <!-- Game Over Modal -->
+          <div id="gameOverModal" class="modal">
+            <div class="modal-content game-over-modal">
+              <div class="modal-header">
+                <h2 id="gameOverTitle">Game Over!</h2>
+                <span class="close-modal">&times;</span>
+              </div>
+              <div class="modal-body">
+                <div class="game-over-message">
+                  <div class="game-over-icon" id="gameOverIcon"></div>
+                  <p id="gameOverMessage"></p>
+                </div>
+                <div class="game-over-stats">
+                  <div class="stat-item">
+                    <span class="stat-label">Hits:</span>
+                    <span class="stat-value" id="hitCount">0</span>
+                  </div>
+                  <div class="stat-item">
+                    <span class="stat-label">Misses:</span>
+                    <span class="stat-value" id="missCount">0</span>
+                  </div>
+                  <div class="stat-item">
+                    <span class="stat-label">Accuracy:</span>
+                    <span class="stat-value" id="accuracy">0%</span>
+                  </div>
+                </div>
+                <button id="restartButton" class="restart-button">Play Again</button>
+              </div>
+            </div>
           </div>
         </div>
       </footer>

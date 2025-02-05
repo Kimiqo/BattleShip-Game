@@ -77,8 +77,61 @@ compBoardContainer.appendChild(compGrid);
 let currentPlayer = p1;
 let gameOver = false;
 
+function showGameOverModal(isWinner) {
+    const modal = document.getElementById('gameOverModal');
+    const title = document.getElementById('gameOverTitle');
+    const message = document.getElementById('gameOverMessage');
+    const icon = document.getElementById('gameOverIcon');
+    const hitCount = document.getElementById('hitCount');
+    const missCount = document.getElementById('missCount');
+    const accuracy = document.getElementById('accuracy');
+    const restartButton = document.getElementById('restartButton');
+
+    // Update content
+    title.textContent = isWinner ? 'Victory!' : 'Game Over';
+    message.textContent = isWinner ? 
+        'Congratulations! You have defeated the enemy fleet!' :
+        'Your fleet has been destroyed! Better luck next time!';
+    icon.className = `game-over-icon ${isWinner ? 'win' : 'lose'}`;
+
+    // Calculate stats
+    const hits = p2.gameboard.hits.length;
+    const misses = p2.gameboard.missedShots.length;
+    const totalShots = hits + misses;
+    const accuracyValue = totalShots > 0 ? Math.round((hits / totalShots) * 100) : 0;
+
+    // Update stats
+    hitCount.textContent = hits;
+    missCount.textContent = misses;
+    accuracy.textContent = `${accuracyValue}%`;
+
+    // Show modal
+    modal.classList.add('show');
+    modal.style.display = 'block';
+
+    // Handle restart
+    restartButton.onclick = () => {
+        modal.classList.remove('show');
+        modal.style.display = 'none';
+        window.location.reload();
+    };
+
+    // Close button
+    modal.querySelector('.close-modal').onclick = () => {
+        modal.classList.remove('show');
+        modal.style.display = 'none';
+    };
+}
+
 function updateStatus(message) {
     gameStatus.textContent = message;
+    
+    // Check for game over
+    if (p1.gameboard.allShipsSunk()) {
+        showGameOverModal(false);
+    } else if (p2.gameboard.allShipsSunk()) {
+        showGameOverModal(true);
+    }
 }
 
 function handleCellClick(event, row, col) {
@@ -93,6 +146,7 @@ function handleCellClick(event, row, col) {
         if (p2.gameboard.allShipsSunk()) {
             gameOver = true;
             updateStatus("Game Over - You Win!");
+            showGameOverModal(true);
             return;
         }
 
@@ -120,6 +174,7 @@ function makeComputerMove() {
         if (p1.gameboard.allShipsSunk()) {
             gameOver = true;
             updateStatus("Game Over - Computer Wins!");
+            showGameOverModal(false);
             return;
         }
 

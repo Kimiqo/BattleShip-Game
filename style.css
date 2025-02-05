@@ -451,6 +451,99 @@ main {
   max-width: 400px;
 }
 
+/* Game Over Modal Styles */
+.game-over-modal {
+  max-width: 500px;
+}
+
+.game-over-message {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.game-over-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  animation: bounce 1s infinite;
+}
+
+.game-over-icon.win::after {
+  content: '🏆';
+}
+
+.game-over-icon.lose::after {
+  content: '💔';
+}
+
+#gameOverMessage {
+  font-size: 1.2rem;
+  color: var(--text-primary);
+  margin: 0;
+  line-height: 1.6;
+}
+
+.game-over-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin: 2rem 0;
+  padding: 1.5rem;
+  background: var(--background-dark);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--primary-color-light);
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-label {
+  display: block;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.stat-value {
+  display: block;
+  color: var(--primary-color);
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.restart-button {
+  display: block;
+  width: 100%;
+  padding: 1rem;
+  font-size: 1.1rem;
+  color: var(--background-dark);
+  background: var(--primary-color);
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.restart-button:hover {
+  background: var(--primary-color-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 208, 255, 0.2);
+}
+
+.restart-button:active {
+  transform: translateY(0);
+}
+
+@media (max-width: 768px) {
+  .game-over-stats {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
 .game_grid {
   border: 1px solid var(--primary-color);
   border-radius: var(--border-radius);
@@ -643,9 +736,7 @@ main {
   from { transform: translateY(-20px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
 }
-  font-size: 40px;
-  z-index: 1001;
-}
+
 
 .modal-content button {
   margin-top: 20px;

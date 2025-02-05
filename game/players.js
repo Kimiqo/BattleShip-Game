@@ -40,28 +40,76 @@ export default class Player {
         return hit;
     }
 
-    makeSmartRandomMove(opponent) {
-        // Try to attack in a checkerboard pattern first for efficiency
-        for (let attempts = 0; attempts < 50; attempts++) {
-            const row = Math.floor(Math.random() * 10);
-            const col = Math.floor(Math.random() * 10);
-            
-            // Skip if not in checkerboard pattern
-            if ((row + col) % 2 !== 0) continue;
-            
-            if (opponent.gameboard.isValidAttack(row, col)) {
-                this.attack(opponent, row, col);
-                return [row, col];
+    getProbabilityMap(opponent) {
+        const probMap = Array(10).fill().map(() => Array(10).fill(0));
+        const remainingShipLengths = [6, 5, 4, 3, 2].filter(length => 
+            !opponent.gameboard.sunkShips.has(opponent.gameboard.ships.find(s => s.length === length))
+        );
+
+        // Calculate probability for each cell
+        for (let row = 0; row < 10; row++) {
+            for (let col = 0; col < 10; col++) {
+                if (!opponent.gameboard.isValidAttack(row, col)) continue;
+
+                // Check horizontal placements
+                remainingShipLengths.forEach(length => {
+                    for (let offset = 0; offset < length; offset++) {
+                        if (this.canPlaceShip(opponent, length, row, col - offset, true)) {
+                            probMap[row][col]++;
+                        }
+                    }
+                });
+
+                // Check vertical placements
+                remainingShipLengths.forEach(length => {
+                    for (let offset = 0; offset < length; offset++) {
+                        if (this.canPlaceShip(opponent, length, row - offset, col, false)) {
+                            probMap[row][col]++;
+                        }
+                    }
+                });
             }
         }
 
-        // Fallback to completely random if checkerboard fails
-        let row, col;
-        do {
-            row = Math.floor(Math.random() * 10);
-            col = Math.floor(Math.random() * 10);
-        } while (!opponent.gameboard.isValidAttack(row, col));
-        
+        return probMap;
+    }
+
+    canPlaceShip(opponent, length, startRow, startCol, isHorizontal) {
+        // Check if all cells in the potential ship placement are valid
+        for (let i = 0; i < length; i++) {
+            const row = isHorizontal ? startRow : startRow + i;
+            const col = isHorizontal ? startCol + i : startCol;
+
+            if (row < 0 || row >= 10 || col < 0 || col >= 10) return false;
+            if (!opponent.gameboard.isValidAttack(row, col) && 
+                !opponent.gameboard.hits.some(([r, c]) => r === row && c === col)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    makeSmartRandomMove(opponent) {
+        const probMap = this.getProbabilityMap(opponent);
+        let maxProb = 0;
+        let bestMoves = [];
+
+        // Find highest probability moves
+        for (let row = 0; row < 10; row++) {
+            for (let col = 0; col < 10; col++) {
+                if (!opponent.gameboard.isValidAttack(row, col)) continue;
+                
+                if (probMap[row][col] > maxProb) {
+                    maxProb = probMap[row][col];
+                    bestMoves = [[row, col]];
+                } else if (probMap[row][col] === maxProb) {
+                    bestMoves.push([row, col]);
+                }
+            }
+        }
+
+        // Choose a random move from the best moves
+        const [row, col] = bestMoves[Math.floor(Math.random() * bestMoves.length)];
         this.attack(opponent, row, col);
         return [row, col];
     }
@@ -73,7 +121,14 @@ export default class Player {
         
         // On easier difficulties, sometimes make random moves
         if (Math.random() > difficulty.hitChance) {
-            return this.makeSmartRandomMove(opponent);
+            let row, col;
+            do {
+                row = Math.floor(Math.random() * 10);
+                col = Math.floor(Math.random() * 10);
+            } while (!opponent.gameboard.isValidAttack(row, col));
+            
+            this.attack(opponent, row, col);
+            return [row, col];
         }
 
         // If we have potential targets from a previous hit, try those first
@@ -100,8 +155,46 @@ export default class Player {
             }
         }
 
-        // If no valid targets, make a smart random move
+        // If we have multiple hits but no valid targets, try to find the ship's direction
+        if (this.hits && this.hits.length >= 2) {
+            const newTargets = this.findShipEndpoints();
+            if (newTargets.length > 0) {
+                this.potentialTargets = newTargets;
+                return this.computerMove(opponent); // Try again with new targets
+            }
+        }
+
+        // If no valid targets, make a probability-based move
         return this.makeSmartRandomMove(opponent);
+    }
+
+    findShipEndpoints() {
+        const targets = [];
+        const hits = [...this.hits].sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+        
+        // Check if hits are in a line
+        const isVertical = hits.every((hit, i) => 
+            i === 0 || hit[1] === hits[0][1]
+        );
+        const isHorizontal = hits.every((hit, i) => 
+            i === 0 || hit[0] === hits[0][0]
+        );
+
+        if (isVertical) {
+            const col = hits[0][1];
+            const minRow = Math.min(...hits.map(h => h[0]));
+            const maxRow = Math.max(...hits.map(h => h[0]));
+            if (minRow > 0) targets.push([minRow - 1, col]);
+            if (maxRow < 9) targets.push([maxRow + 1, col]);
+        } else if (isHorizontal) {
+            const row = hits[0][0];
+            const minCol = Math.min(...hits.map(h => h[1]));
+            const maxCol = Math.max(...hits.map(h => h[1]));
+            if (minCol > 0) targets.push([row, minCol - 1]);
+            if (maxCol < 9) targets.push([row, maxCol + 1]);
+        }
+
+        return targets;
     }
 
     getTargetScore(row, col) {
